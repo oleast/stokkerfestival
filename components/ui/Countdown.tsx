@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useSyncExternalStore } from 'react';
 
 const TARGET_DATE = new Date('2026-08-22T12:00:00');
 
@@ -25,16 +25,13 @@ function calculateTimeLeft(): string {
   return `${months} måneder og ${days} ${days === 1 ? 'dag' : 'dager'} igjen`;
 }
 
+const subscribe = () => () => {};
+const getServerSnapshot = () => null;
+
 export default function Countdown() {
-  const [timeLeft, setTimeLeft] = useState<string | null>(null);
-
-  useEffect(() => {
-    setTimeLeft(calculateTimeLeft());
-  }, []);
-
-  if (!timeLeft) return null;
+  const timeLeft = useSyncExternalStore(subscribe, calculateTimeLeft, getServerSnapshot);
 
   return (
-    <p className="text-lg text-accent-light">{timeLeft}</p>
+    <p className="min-h-7 text-lg text-accent-light">{timeLeft}</p>
   );
 }
