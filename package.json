@@ -8,8 +8,6 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "preview": "opennextjs-cloudflare && wrangler dev",
-    "deploy": "opennextjs-cloudflare && wrangler deploy",
     "upload-images": "node --env-file=.env.local --import=tsx/esm scripts/upload-to-sanity.ts"
   },
   "dependencies": {
