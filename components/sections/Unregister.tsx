@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
+import posthog from 'posthog-js';
 
 type UnregisterState = 'idle' | 'loading' | 'success' | 'not-found' | 'error';
 
@@ -16,12 +17,20 @@ export default function Unregister() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+
+    posthog.capture('unregistration_submitted');
+
     setState('loading');
+
+    const distinctId = posthog.get_distinct_id();
 
     try {
       const response = await fetch('/api/unregister', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'X-POSTHOG-DISTINCT-ID': distinctId,
+        },
         body: JSON.stringify({ name, email }),
       });
 
@@ -61,12 +70,8 @@ export default function Unregister() {
           Kan du likevel ikke komme? Skriv inn navn og e-post du meldte deg på med.
         </p>
 
-        {state === 'not-found' && (
-          <p className="mt-4 text-sm text-red-600">{message}</p>
-        )}
-        {state === 'error' && (
-          <p className="mt-4 text-sm text-red-600">{message}</p>
-        )}
+        {state === 'not-found' && <p className="mt-4 text-sm text-red-600">{message}</p>}
+        {state === 'error' && <p className="mt-4 text-sm text-red-600">{message}</p>}
 
         <form onSubmit={handleSubmit} className="mt-4 flex flex-col gap-3 sm:flex-row">
           <input

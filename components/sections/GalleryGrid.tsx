@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import posthog from 'posthog-js';
 import Lightbox from '@/components/ui/Lightbox';
 
 interface GalleryImage {
@@ -24,7 +25,10 @@ export default function GalleryGrid({ images }: GalleryGridProps) {
         {images.map((image) => (
           <button
             key={image._id}
-            onClick={() => setLightboxImage(image)}
+            onClick={() => {
+              posthog.capture('gallery_image_opened', { alt: image.alt });
+              setLightboxImage(image);
+            }}
             className="mb-4 block w-full break-inside-avoid overflow-hidden rounded-lg transition-shadow hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary/40"
           >
             <Image

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import posthog from 'posthog-js';
 import { fireConfetti, ConfettiButton } from '@/components/ui/Confetti';
 import { registrationSchema } from '@/lib/validation/registration';
 
@@ -31,28 +32,44 @@ export default function Registration() {
       return;
     }
 
+    posthog.capture('registration_submitted', {
+      number_of_people: numberOfPeople,
+      has_comment: !!comment,
+      show_on_guest_list: showOnGuestList,
+    });
+
     setFormState('loading');
+
+    const distinctId = posthog.get_distinct_id();
 
     try {
       const response = await fetch('/api/registration', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'X-POSTHOG-DISTINCT-ID': distinctId,
+        },
         body: JSON.stringify(data),
       });
 
       const responseData = await response.json();
 
       if (response.status === 201) {
+        posthog.identify(email, { name, email });
         setFormState('success');
         fireConfetti();
       } else if (response.status === 409) {
+        posthog.capture('registration_duplicate_attempted', { email });
         setFormState('duplicate');
         setErrorMessage(responseData.message);
       } else {
+        posthog.capture('registration_failed', { status: response.status });
         setFormState('error');
         setErrorMessage(responseData.error || 'Noe gikk galt. Prøv igjen.');
       }
-    } catch {
+    } catch (err) {
+      posthog.captureException(err);
+      posthog.capture('registration_failed', { error: 'network' });
       setFormState('error');
       setErrorMessage('Kunne ikke koble til serveren. Prøv igjen.');
     }
@@ -76,9 +93,7 @@ export default function Registration() {
     <section id="pamelding" className="px-6 py-20 md:py-28">
       <div className="mx-auto max-w-2xl">
         <h2 className="text-3xl font-bold text-text md:text-4xl">Meld deg på</h2>
-        <p className="mt-4 text-lg text-text-muted">
-          Fyll inn navnet ditt, så ses vi 22. august.
-        </p>
+        <p className="mt-4 text-lg text-text-muted">Fyll inn navnet ditt, så ses vi 22. august.</p>
 
         {formState === 'duplicate' && (
           <div className="mt-6 rounded-lg border border-accent bg-accent/10 p-4">
@@ -106,9 +121,7 @@ export default function Registration() {
               className="mt-1 w-full rounded-lg border border-border bg-white px-4 py-3 text-text placeholder:text-text-muted/50 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
               placeholder="Ola Nordmann"
             />
-            {fieldErrors.name && (
-              <p className="mt-1 text-sm text-red-600">{fieldErrors.name[0]}</p>
-            )}
+            {fieldErrors.name && <p className="mt-1 text-sm text-red-600">{fieldErrors.name[0]}</p>}
           </div>
 
           <div>

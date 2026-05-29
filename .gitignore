@@ -46,3 +46,6 @@ next-env.d.ts
 
 # raw media (managed in Sanity)
 /img
+.env.local
+
+.claude

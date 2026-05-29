@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Countdown from '@/components/ui/Countdown';
+import RegisterCTALink from '@/components/ui/RegisterCTALink';
 import { client } from '@/sanity/lib/client';
 import { siteSettingsQuery } from '@/sanity/lib/queries';
 import { urlFor } from '@/sanity/lib/image';
@@ -64,9 +65,7 @@ export default async function Hero() {
             Stokkerfestivalen
           </h1>
           {settings.tagline && (
-            <p className="mt-4 text-xl text-white/80 md:text-2xl">
-              {settings.tagline}
-            </p>
+            <p className="mt-4 text-xl text-white/80 md:text-2xl">{settings.tagline}</p>
           )}
           <div className="mt-8 space-y-1">
             {formattedDate && <p className="text-lg font-medium text-white">{formattedDate}</p>}
@@ -77,12 +76,7 @@ export default async function Hero() {
               <Countdown festivalDate={settings.festivalDate} />
             </div>
           )}
-          <a
-            href="#pamelding"
-            className="mt-10 inline-block rounded-lg bg-white px-8 py-3.5 text-lg font-semibold text-primary transition-colors hover:bg-background"
-          >
-            Meld deg på
-          </a>
+          <RegisterCTALink className="mt-10 inline-block rounded-lg bg-white px-8 py-3.5 text-lg font-semibold text-primary transition-colors hover:bg-background" />
         </div>
       </div>
     </section>

@@ -2,6 +2,7 @@
 
 import { useCallback } from 'react';
 import confetti from 'canvas-confetti';
+import posthog from 'posthog-js';
 
 const COLORS = ['#8B2500', '#D4A574', '#A83000', '#E8CBA8', '#6B1D00'];
 
@@ -26,6 +27,7 @@ export function fireConfetti() {
 export function ConfettiButton() {
   const handleClick = useCallback(() => {
     fireConfetti();
+    posthog.capture('confetti_button_clicked');
   }, []);
 
   return (
