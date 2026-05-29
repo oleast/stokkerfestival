@@ -1,15 +1,53 @@
 import Image from 'next/image';
 import Countdown from '@/components/ui/Countdown';
-import heroImage from '@/img/IMG_20200623_192830.jpg';
+import { client } from '@/sanity/lib/client';
+import { siteSettingsQuery } from '@/sanity/lib/queries';
+import { urlFor } from '@/sanity/lib/image';
+import type { SanityImageSource } from '@sanity/image-url';
 
-export default function Hero() {
+interface SiteSettings {
+  heroImage: SanityImageSource;
+  heroAlt: string;
+  festivalDate: string | null;
+  tagline: string | null;
+  subtitle: string | null;
+}
+
+export default async function Hero() {
+  const settings: SiteSettings | null = await client.fetch(
+    siteSettingsQuery,
+    {},
+    { next: { revalidate: 3600 } },
+  );
+
+  if (!settings) {
+    return (
+      <section className="flex min-h-screen items-center justify-center bg-primary px-8">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold text-white md:text-5xl lg:text-6xl">
+            Stokkerfestivalen
+          </h1>
+        </div>
+      </section>
+    );
+  }
+
+  const imageUrl = urlFor(settings.heroImage).width(1920).auto('format').url();
+  const formattedDate = settings.festivalDate
+    ? new Date(settings.festivalDate).toLocaleDateString('nb-NO', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      })
+    : null;
+
   return (
     <section className="relative flex min-h-screen flex-col lg:flex-row">
       {/* Image panel - shows first on mobile */}
       <div className="relative h-[50vh] w-full lg:h-auto lg:w-1/2">
         <Image
-          src={heroImage}
-          alt="Gården på Sørumsvegen 50 i kveldssol"
+          src={imageUrl}
+          alt={settings.heroAlt}
           fill
           priority
           className="object-cover"
@@ -25,16 +63,20 @@ export default function Hero() {
           <h1 className="text-4xl font-bold text-white md:text-5xl lg:text-6xl">
             Stokkerfestivalen
           </h1>
-          <p className="mt-4 text-xl text-white/80 md:text-2xl">
-            30 år. Halvveis til 60. Det krever en fest.
-          </p>
+          {settings.tagline && (
+            <p className="mt-4 text-xl text-white/80 md:text-2xl">
+              {settings.tagline}
+            </p>
+          )}
           <div className="mt-8 space-y-1">
-            <p className="text-lg font-medium text-white">22. august 2026</p>
+            {formattedDate && <p className="text-lg font-medium text-white">{formattedDate}</p>}
             <p className="text-lg text-white/70">Sørumsvegen 50</p>
           </div>
-          <div className="mt-4">
-            <Countdown />
-          </div>
+          {settings.festivalDate && (
+            <div className="mt-4">
+              <Countdown festivalDate={settings.festivalDate} />
+            </div>
+          )}
           <a
             href="#pamelding"
             className="mt-10 inline-block rounded-lg bg-white px-8 py-3.5 text-lg font-semibold text-primary transition-colors hover:bg-background"

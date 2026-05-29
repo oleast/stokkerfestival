@@ -2,11 +2,9 @@
 
 import { useSyncExternalStore } from 'react';
 
-const TARGET_DATE = new Date('2026-08-22T12:00:00');
-
-function calculateTimeLeft(): string {
+function calculateTimeLeft(targetDate: Date): string {
   const now = new Date();
-  const diff = TARGET_DATE.getTime() - now.getTime();
+  const diff = targetDate.getTime() - now.getTime();
 
   if (diff <= 0) return 'Festen var fantastisk!';
 
@@ -28,8 +26,20 @@ function calculateTimeLeft(): string {
 const subscribe = () => () => {};
 const getServerSnapshot = () => null;
 
-export default function Countdown() {
-  const timeLeft = useSyncExternalStore(subscribe, calculateTimeLeft, getServerSnapshot);
+interface CountdownProps {
+  festivalDate?: string;
+}
+
+export default function Countdown({ festivalDate }: CountdownProps) {
+  const targetDate = festivalDate ? new Date(festivalDate) : null;
+
+  const timeLeft = useSyncExternalStore(
+    subscribe,
+    () => (targetDate ? calculateTimeLeft(targetDate) : null),
+    getServerSnapshot,
+  );
+
+  if (!timeLeft) return null;
 
   return (
     <p className="min-h-7 text-lg text-accent-light">{timeLeft}</p>

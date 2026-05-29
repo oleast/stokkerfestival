@@ -43,3 +43,6 @@ next-env.d.ts
 # Cloudflare
 .open-next
 .wrangler
+
+# raw media (managed in Sanity)
+/img

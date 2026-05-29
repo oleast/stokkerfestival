@@ -37,3 +37,26 @@ export const guestListQuery = groq`
     numberOfPeople
   }
 `;
+
+export const siteSettingsQuery = groq`
+  *[_type == "siteSettings"][0] {
+    heroImage,
+    heroAlt,
+    festivalDate,
+    tagline,
+    subtitle,
+    ogTitle,
+    ogDescription,
+    ogImage
+  }
+`;
+
+export const galleryVideosQuery = groq`
+  *[_type == "galleryVideo"] | order(order asc) {
+    _id,
+    "fileUrl": file.asset->url,
+    alt,
+    order,
+    thumbnail
+  }
+`;

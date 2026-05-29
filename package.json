@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "eslint",
     "preview": "opennextjs-cloudflare && wrangler dev",
-    "deploy": "opennextjs-cloudflare && wrangler deploy"
+    "deploy": "opennextjs-cloudflare && wrangler deploy",
+    "upload-images": "node --env-file=.env.local --import=tsx/esm scripts/upload-to-sanity.ts"
   },
   "dependencies": {
     "@sanity/image-url": "^2.1.1",
@@ -39,6 +40,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^17.0.5",
     "prettier": "^3.8.3",
+    "tsx": "^4",
     "typescript": "^5",
     "wrangler": "^4.95.0"
   }
