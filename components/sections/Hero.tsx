@@ -54,25 +54,23 @@ export default async function Hero() {
 
       <div className="relative mx-auto flex min-h-[92svh] max-w-7xl items-end px-6 pb-16 pt-32 md:px-8 md:pb-24 lg:pb-28">
         <div className="max-w-3xl">
-          <p className="eyebrow text-white/80">Privat 30-årsdag</p>
           <h1 className="mt-5 text-6xl font-semibold leading-none text-white md:text-8xl lg:text-9xl">
-            Stokkerfestivalen
+            Stokkerfestival!
           </h1>
           <p className="mt-6 max-w-2xl text-xl leading-relaxed text-white/90 md:text-2xl">
             {subtitle}. {tagline}
           </p>
 
-          <div className="mt-10 grid gap-5 border-y border-white/25 py-6 text-sm text-white/90 sm:grid-cols-3">
+          <div className="mt-10 grid gap-5 border-white/25 py-6 text-sm text-white/90 sm:grid-cols-3">
             <div>
-              <p className="text-white/60">Dato</p>
+              <p className="text-white">Dato</p>
               <p className="mt-1 font-medium capitalize">{formattedDate}</p>
             </div>
             <div>
-              <p className="text-white/60">Sted</p>
+              <p className="text-white">Sted</p>
               <p className="mt-1 font-medium">Sørumsvegen 50</p>
             </div>
             <div>
-              <p className="text-white/60">Nedtelling</p>
               <Countdown festivalDate={festivalDate} className="mt-1 text-white" />
             </div>
           </div>
