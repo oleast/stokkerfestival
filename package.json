@@ -8,6 +8,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
     "upload-images": "node --env-file=.env.local --import=tsx/esm scripts/upload-to-sanity.ts"
   },
   "dependencies": {
