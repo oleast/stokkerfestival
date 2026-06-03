@@ -16,13 +16,13 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://festival.stokkers.no'),
-  title: 'Stokkerfestivalen \u2013 22. august 2026',
+  title: 'Stokkerfestivalen | Ole Anders sin 30-årsdag',
   description:
-    '30-\u00e5rsfest p\u00e5 g\u00e5rden. Grilling, basseng, spill og god stemning.',
+    'Privat invitasjon til Ole Anders sin 30-årsdag på Sørumsvegen 50, 22. august 2026.',
   openGraph: {
-    title: 'Stokkerfestivalen \u2013 22. august 2026',
+    title: 'Stokkerfestivalen | Ole Anders sin 30-årsdag',
     description:
-      '30-\u00e5rsfest p\u00e5 g\u00e5rden. Grilling, basseng, spill og god stemning.',
+      'Privat invitasjon til Ole Anders sin 30-årsdag på Sørumsvegen 50, 22. august 2026.',
     type: 'website',
     url: 'https://festival.stokkers.no',
     locale: 'nb_NO',
@@ -41,7 +41,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="nb" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body>
+      <body className="bg-paper text-ink antialiased">
         <Header />
         {children}
         <Footer />

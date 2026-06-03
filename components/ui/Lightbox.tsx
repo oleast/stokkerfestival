@@ -1,7 +1,16 @@
 'use client';
 
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
+
+const focusableSelector = [
+  'a[href]',
+  'button:not([disabled])',
+  'input:not([disabled])',
+  'select:not([disabled])',
+  'textarea:not([disabled])',
+  '[tabindex]:not([tabindex="-1"])',
+].join(',');
 
 interface LightboxProps {
   src: string;
@@ -10,19 +19,70 @@ interface LightboxProps {
 }
 
 export default function Lightbox({ src, alt, onClose }: LightboxProps) {
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
+
   const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+    (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        onClose();
+        return;
+      }
+
+      if (event.key !== 'Tab') return;
+
+      const dialog = dialogRef.current;
+      if (!dialog) return;
+
+      const focusableElements = Array.from(dialog.querySelectorAll<HTMLElement>(focusableSelector))
+        .filter((element) => element.tabIndex >= 0 && element.offsetParent !== null);
+
+      if (focusableElements.length === 0) {
+        event.preventDefault();
+        dialog.focus();
+        return;
+      }
+
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+      const activeElement = document.activeElement;
+
+      if (!activeElement || !dialog.contains(activeElement)) {
+        event.preventDefault();
+        (event.shiftKey ? lastElement : firstElement).focus();
+        return;
+      }
+
+      if (event.shiftKey && (activeElement === firstElement || activeElement === dialog)) {
+        event.preventDefault();
+        lastElement.focus();
+        return;
+      }
+
+      if (!event.shiftKey && activeElement === lastElement) {
+        event.preventDefault();
+        firstElement.focus();
+      }
     },
     [onClose],
   );
 
   useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    previousFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+
     document.addEventListener('keydown', handleKeyDown);
     document.body.style.overflow = 'hidden';
+    closeButtonRef.current?.focus();
+
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = '';
+      document.body.style.overflow = previousOverflow;
+      if (previousFocusRef.current?.isConnected) {
+        previousFocusRef.current.focus();
+      }
     };
   }, [handleKeyDown]);
 
@@ -31,9 +91,13 @@ export default function Lightbox({ src, alt, onClose }: LightboxProps) {
       className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4"
       onClick={onClose}
       role="dialog"
+      aria-modal="true"
       aria-label={alt}
+      tabIndex={-1}
+      ref={dialogRef}
     >
       <button
+        ref={closeButtonRef}
         onClick={onClose}
         className="absolute right-4 top-4 rounded-full bg-white/10 p-2 text-white transition-colors hover:bg-white/20"
         aria-label="Lukk"

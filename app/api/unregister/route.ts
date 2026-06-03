@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { unregisterSchema } from '@/lib/validation/registration';
 import { writeClient } from '@/sanity/lib/writeClient';
-import { client } from '@/sanity/lib/client';
 import { registrationByEmailQuery } from '@/sanity/lib/queries';
 import { getPostHogClient } from '@/lib/posthog-server';
 
@@ -19,7 +18,11 @@ export async function POST(request: Request) {
     const { name, email: rawEmail } = result.data;
     const normalizedEmail = rawEmail.toLowerCase().trim();
 
-    const existing = await client.fetch(registrationByEmailQuery, { email: normalizedEmail });
+    const existing = await writeClient.fetch(
+      registrationByEmailQuery,
+      { email: normalizedEmail },
+      { cache: 'no-store' },
+    );
     if (!existing) {
       return NextResponse.json(
         { error: 'Fant ingen påmelding med dette navnet og denne e-postadressen.' },
@@ -36,12 +39,20 @@ export async function POST(request: Request) {
 
     await writeClient.delete(existing._id);
 
-    const posthog = getPostHogClient();
-    posthog.capture({
-      distinctId: distinctId || normalizedEmail,
-      event: 'unregistration_succeeded',
-    });
-    await posthog.shutdown();
+    try {
+      const posthog = getPostHogClient();
+
+      try {
+        posthog.capture({
+          distinctId: distinctId || normalizedEmail,
+          event: 'unregistration_succeeded',
+        });
+      } finally {
+        await posthog.shutdown();
+      }
+    } catch (error) {
+      console.error('PostHog unregistration tracking failed', error);
+    }
 
     return NextResponse.json(
       { message: 'Du er avmeldt. Synd du ikke kan komme!' },

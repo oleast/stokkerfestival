@@ -21,22 +21,27 @@ export default function GalleryGrid({ images }: GalleryGridProps) {
 
   return (
     <>
-      <div className="columns-1 gap-4 sm:columns-2 md:columns-3 lg:columns-4">
-        {images.map((image) => (
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:auto-rows-[210px] md:gap-4">
+        {images.map((image, index) => (
           <button
             key={image._id}
             onClick={() => {
               posthog.capture('gallery_image_opened', { alt: image.alt });
               setLightboxImage(image);
             }}
-            className="mb-4 block w-full break-inside-avoid overflow-hidden rounded-lg transition-shadow hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary/40"
+            className={`relative overflow-hidden rounded-md bg-paper-deep transition duration-300 hover:shadow-soft focus:outline-none focus:ring-2 focus:ring-primary/25 ${
+              index === 0
+                ? 'col-span-2 aspect-[4/3] md:row-span-2 md:aspect-auto'
+                : index === 3
+                  ? 'col-span-2 aspect-[4/3] md:col-span-1 md:aspect-auto'
+                  : 'aspect-[3/4] md:aspect-auto'
+            }`}
           >
             <Image
               src={image.thumbnailUrl}
               alt={image.alt}
-              width={800}
-              height={600}
-              className="h-auto w-full object-cover"
+              fill
+              className="object-cover transition duration-500 hover:scale-[1.03]"
               sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
             />
           </button>

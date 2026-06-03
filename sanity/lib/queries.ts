@@ -45,6 +45,17 @@ export const siteSettingsQuery = groq`
     festivalDate,
     tagline,
     subtitle,
+    activityImages[]{
+      _key,
+      activityKey,
+      title,
+      image->{
+        _id,
+        image,
+        alt,
+        order
+      }
+    },
     ogTitle,
     ogDescription,
     ogImage

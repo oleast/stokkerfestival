@@ -8,7 +8,7 @@ interface SanityGalleryImage {
   _id: string;
   image: object;
   alt: string;
-  order: number;
+  order?: number | null;
 }
 
 export default async function Gallery() {
@@ -28,12 +28,18 @@ export default async function Gallery() {
   }));
 
   return (
-    <SectionWrapper id="galleri">
-      <h2 className="text-3xl font-bold text-text md:text-4xl">Galleri</h2>
-      <p className="mt-4 text-lg text-text-muted">
-        Et lite innblikk i hva som venter.
-      </p>
-      <div className="mt-10">
+    <SectionWrapper id="galleri" width="xl" tone="paper">
+      <div className="max-w-3xl">
+        <p className="eyebrow">Bilder</p>
+        <h2 className="mt-4 text-4xl font-semibold leading-tight text-ink md:text-5xl">
+          Litt av stemningen.
+        </h2>
+        <p className="mt-5 lead-text">
+          Noen glimt fra stedet og sommeren rundt. Bildene er ikke ment som pynt, bare som
+          en liten påminnelse om hvor vi skal være.
+        </p>
+      </div>
+      <div className="mt-12">
         <GalleryGrid images={galleryImages} />
       </div>
     </SectionWrapper>

@@ -25,7 +25,7 @@ export default function Map() {
       center={POSITION}
       zoom={14}
       scrollWheelZoom={false}
-      className="h-[400px] w-full rounded-xl"
+      className="h-[360px] w-full rounded-md border border-line md:h-[440px]"
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -35,7 +35,7 @@ export default function Map() {
         <Popup>
           <strong>Sørumsvegen 50, Gjerdrum</strong>
           <br />
-          Stokkerfestivalen 🎉
+          Stokkerfestivalen
         </Popup>
       </Marker>
     </MapContainer>

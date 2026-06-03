@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { registrationSchema } from '@/lib/validation/registration';
 import { writeClient } from '@/sanity/lib/writeClient';
-import { client } from '@/sanity/lib/client';
 import { registrationByEmailQuery } from '@/sanity/lib/queries';
 import { sendEmail } from '@/lib/email/brevo';
 import { buildConfirmationEmail, buildAdminNotificationEmail } from '@/lib/email/templates';
@@ -25,7 +24,7 @@ export async function POST(request: Request) {
     const normalizedEmail = email.toLowerCase().trim();
 
     // Check for duplicate
-    const existing = await client.fetch(
+    const existing = await writeClient.fetch(
       registrationByEmailQuery,
       { email: normalizedEmail },
       { cache: 'no-store' },
@@ -48,33 +47,39 @@ export async function POST(request: Request) {
       registeredAt: new Date().toISOString(),
     });
 
-    // Track registration server-side
-    const posthog = getPostHogClient();
-    const trackingId = distinctId || normalizedEmail;
-    posthog.capture({
-      distinctId: trackingId,
-      event: 'registration_succeeded',
-      properties: {
-        $set: { name, email: normalizedEmail },
-        number_of_people: numberOfPeople,
-        shows_on_guest_list: showOnGuestList,
-        has_comment: !!comment,
-      },
-    });
-    posthog.identify({
-      distinctId: trackingId,
-      properties: { name, email: normalizedEmail },
-    });
-    await posthog.shutdown();
+    try {
+      const posthog = getPostHogClient();
+      const trackingId = distinctId || normalizedEmail;
 
-    // Send emails (non-blocking — don't fail registration if emails fail)
+      try {
+        posthog.capture({
+          distinctId: trackingId,
+          event: 'registration_succeeded',
+          properties: {
+            $set: { name, email: normalizedEmail },
+            number_of_people: numberOfPeople,
+            shows_on_guest_list: showOnGuestList,
+            has_comment: !!comment,
+          },
+        });
+        posthog.identify({
+          distinctId: trackingId,
+          properties: { name, email: normalizedEmail },
+        });
+      } finally {
+        await posthog.shutdown();
+      }
+    } catch (error) {
+      console.error('PostHog registration tracking failed', error);
+    }
+
+    // Send emails without failing registration if delivery fails
     const adminEmail = process.env.ADMIN_EMAIL || 'olestokk@gmail.com';
 
-    // Fire-and-forget: emails should not block the response
-    void Promise.allSettled([
+    await Promise.allSettled([
       sendEmail({
         to: { email: normalizedEmail, name },
-        subject: 'Du er påmeldt Stokkerfestivalen! 🎉',
+        subject: 'Du er påmeldt Stokkerfestivalen',
         htmlContent: buildConfirmationEmail({ name, numberOfPeople, email: normalizedEmail }),
       }),
       sendEmail({

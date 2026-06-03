@@ -32,8 +32,8 @@ export default function FadeIn({ children, className = '' }: FadeInProps) {
   return (
     <div
       ref={ref}
-      className={`transition-all duration-700 ease-out motion-reduce:transition-none ${
-        isVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
+      className={`transition-all duration-500 ease-out motion-reduce:transition-none ${
+        isVisible ? 'translate-y-0 opacity-100' : 'translate-y-3 opacity-0'
       } ${className}`}
     >
       {children}

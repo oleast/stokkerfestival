@@ -2,17 +2,18 @@ import Link from 'next/link';
 
 export default function Footer() {
   return (
-    <footer className="border-t border-border bg-background-alt px-6 py-12">
-      <div className="mx-auto max-w-5xl">
-        <div className="flex flex-col items-center gap-6 text-center md:flex-row md:justify-between md:text-left">
+    <footer className="border-t border-line bg-paper px-6 py-12">
+      <div className="mx-auto max-w-6xl">
+        <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="font-semibold text-text">Stokkerfestivalen</p>
-            <p className="text-sm text-text-muted">22. august 2026 · Sørumsvegen 50</p>
+            <p className="text-2xl font-semibold text-ink">Stokkerfestivalen</p>
+            <p className="mt-2 text-sm text-text-muted">Ole Anders sin 30-årsdag</p>
+            <p className="mt-1 text-sm text-text-muted">22. august 2026 · Sørumsvegen 50</p>
           </div>
-          <div className="flex flex-col items-center gap-2 md:items-end">
+          <div className="flex flex-col gap-2 md:items-end">
             <Link
               href="/personvern"
-              className="text-sm text-text-muted underline hover:text-primary"
+              className="text-sm text-text-muted underline decoration-line underline-offset-4 hover:text-primary"
             >
               Personvernerklæring
             </Link>
@@ -24,9 +25,6 @@ export default function Footer() {
             </a>
           </div>
         </div>
-        <p className="mt-8 text-center text-xs text-text-muted/60">
-          Laget med ❤️ og tvilsom kode
-        </p>
       </div>
     </footer>
   );

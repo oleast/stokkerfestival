@@ -1,6 +1,6 @@
 'use client';
 
-import { useSyncExternalStore } from 'react';
+import { useMemo, useSyncExternalStore } from 'react';
 
 function calculateTimeLeft(targetDate: Date): string {
   const now = new Date();
@@ -23,25 +23,27 @@ function calculateTimeLeft(targetDate: Date): string {
   return `${months} måneder og ${days} ${days === 1 ? 'dag' : 'dager'} igjen`;
 }
 
-const subscribe = () => () => {};
-const getServerSnapshot = () => null;
-
 interface CountdownProps {
   festivalDate?: string;
+  className?: string;
 }
 
-export default function Countdown({ festivalDate }: CountdownProps) {
-  const targetDate = festivalDate ? new Date(festivalDate) : null;
+const subscribe = (onStoreChange: () => void) => {
+  const intervalId = window.setInterval(onStoreChange, 60 * 1000);
+  return () => window.clearInterval(intervalId);
+};
 
-  const timeLeft = useSyncExternalStore(
-    subscribe,
-    () => (targetDate ? calculateTimeLeft(targetDate) : null),
-    getServerSnapshot,
-  );
+const getSnapshot = () => Math.floor(Date.now() / (60 * 1000));
+const getServerSnapshot = () => null;
+
+export default function Countdown({ festivalDate, className = '' }: CountdownProps) {
+  const currentMinute = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const targetDate = useMemo(() => (festivalDate ? new Date(festivalDate) : null), [festivalDate]);
+  const timeLeft = targetDate && currentMinute !== null ? calculateTimeLeft(targetDate) : null;
 
   if (!timeLeft) return null;
 
   return (
-    <p className="min-h-7 text-lg text-accent-light">{timeLeft}</p>
+    <p className={`min-h-6 text-sm font-medium ${className}`}>{timeLeft}</p>
   );
 }

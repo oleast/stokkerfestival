@@ -33,9 +33,9 @@ export function ConfettiButton() {
   return (
     <button
       onClick={handleClick}
-      className="mt-4 rounded-lg border border-primary/30 px-4 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary hover:text-white"
+      className="mt-6 rounded-md border border-primary/30 px-5 py-2.5 text-sm font-medium text-primary transition-colors hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-primary/20"
     >
-      🎉 Mer konfetti!
+      Mer konfetti
     </button>
   );
 }

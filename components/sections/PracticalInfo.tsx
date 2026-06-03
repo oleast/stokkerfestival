@@ -6,64 +6,58 @@ import SectionWrapper from '@/components/ui/SectionWrapper';
 const Map = dynamic(() => import('@/components/ui/Map'), {
   ssr: false,
   loading: () => (
-    <div className="h-[400px] w-full animate-pulse rounded-xl bg-background-alt" />
+    <div className="h-[360px] w-full animate-pulse rounded-md border border-line bg-paper-deep md:h-[440px]" />
   ),
 });
 
 const infoItems = [
   {
-    icon: '📍',
     title: 'Adresse',
     text: 'Sørumsvegen 50, 2022 Gjerdrum',
   },
   {
-    icon: '📅',
     title: 'Dato',
-    text: '22. august 2026 — tidspunkt kommer',
+    text: '22. august 2026. Tidspunkt kommer nærmere.',
   },
   {
-    icon: '🎒',
     title: 'Ta med',
     text: 'Grillmat, drikke, badeklær og godt humør',
   },
   {
-    icon: '🚗',
     title: 'Parkering',
-    text: 'Langs veien og på tunet — det er plass nok',
+    text: 'Langs veien og på tunet. Det pleier å ordne seg.',
   },
   {
-    icon: '🛏️',
     title: 'Overnatting',
-    text: 'Begrenset plass — ta kontakt om du trenger å sove over',
+    text: 'Begrenset plass. Ta kontakt om du trenger å sove over.',
   },
 ];
 
 export default function PracticalInfo() {
   return (
-    <SectionWrapper id="praktisk-info">
-      <h2 className="text-3xl font-bold text-text md:text-4xl">Praktisk info</h2>
-      <p className="mt-4 text-lg text-text-muted">
-        Alt du trenger å vite (og litt til).
-      </p>
+    <SectionWrapper id="praktisk-info" width="lg" tone="paper">
+      <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+        <div>
+          <p className="eyebrow">Praktisk</p>
+          <h2 className="mt-4 text-4xl font-semibold leading-tight text-ink md:text-5xl">
+            Det enkle først.
+          </h2>
+          <p className="mt-5 lead-text">
+            Det er en uformell kveld på gården. Kom som du er, og ta med det du selv vil
+            spise og drikke.
+          </p>
 
-      <div className="mt-12 grid gap-12 lg:grid-cols-2">
-        {/* Info list */}
-        <div className="space-y-6">
+          <div className="mt-10 border-t border-line">
           {infoItems.map((item) => (
-            <div key={item.title} className="flex gap-4">
-              <span className="text-2xl" role="img" aria-label={item.title}>
-                {item.icon}
-              </span>
-              <div>
-                <h3 className="font-semibold text-text">{item.title}</h3>
-                <p className="text-text-muted">{item.text}</p>
-              </div>
+            <div key={item.title} className="grid gap-2 border-b border-line py-5 sm:grid-cols-[8rem_1fr]">
+              <h3 className="text-sm font-semibold text-ink">{item.title}</h3>
+              <p className="leading-relaxed text-text-muted">{item.text}</p>
             </div>
           ))}
+          </div>
         </div>
 
-        {/* Map */}
-        <div>
+        <div className="lg:pt-2">
           <Map />
         </div>
       </div>

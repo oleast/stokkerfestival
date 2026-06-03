@@ -15,34 +15,38 @@ export default async function GuestList() {
     { next: { revalidate: 60 } },
   );
 
-  const totalPeople = guests.reduce((sum, g) => sum + g.numberOfPeople, 0);
-  const firstNames = guests.map((g) => g.name.split(' ')[0]);
+  const totalPeople = guests.reduce((sum, guest) => sum + guest.numberOfPeople, 0);
 
   return (
-    <SectionWrapper id="gjesteliste" className="bg-background-alt">
-      <h2 className="text-3xl font-bold text-text md:text-4xl">Gjestelisten</h2>
+    <SectionWrapper id="gjesteliste" width="lg" tone="warm" spacing="compact">
+      <div className="grid gap-8 md:grid-cols-[0.8fr_1.2fr] md:items-start">
+        <div>
+          <p className="eyebrow">Gjesteliste</p>
+          <h2 className="mt-4 text-4xl font-semibold leading-tight text-ink md:text-5xl">Hvem kommer?</h2>
+        </div>
 
-      {guests.length === 0 ? (
-        <p className="mt-6 text-lg text-text-muted">
-          Ingen påmeldt ennå. Bli den første! 👆
-        </p>
-      ) : (
-        <>
-          <p className="mt-4 text-lg text-text-muted">
-            {totalPeople} {totalPeople === 1 ? 'person' : 'personer'} påmeldt
+        {guests.length === 0 ? (
+          <p className="border-t border-line pt-6 lead-text">
+            Ingen påmeldte vises ennå. Gjestelisten fylles rolig etter hvert.
           </p>
-          <div className="mt-8 flex flex-wrap gap-2">
-            {firstNames.map((name, i) => (
-              <span
-                key={i}
-                className="rounded-full border border-border bg-background px-4 py-1.5 text-sm text-text"
-              >
-                {name}
-              </span>
-            ))}
+        ) : (
+          <div>
+            <p className="lead-text">
+              {totalPeople} {totalPeople === 1 ? 'person' : 'personer'} er påmeldt så langt.
+            </p>
+            <ul className="mt-8 grid border-t border-line sm:grid-cols-2">
+              {guests.map((guest) => (
+                <li key={guest._id} className="border-b border-line py-3 text-ink">
+                  {guest.name.split(' ')[0]}
+                  {guest.numberOfPeople > 1 && (
+                    <span className="text-text-muted"> + {guest.numberOfPeople - 1}</span>
+                  )}
+                </li>
+              ))}
+            </ul>
           </div>
-        </>
-      )}
+        )}
+      </div>
     </SectionWrapper>
   );
 }

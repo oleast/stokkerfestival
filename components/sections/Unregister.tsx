@@ -15,8 +15,8 @@ export default function Unregister() {
   const [state, setState] = useState<UnregisterState>('idle');
   const [message, setMessage] = useState('');
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  async function handleSubmit(event: React.FormEvent) {
+    event.preventDefault();
 
     posthog.capture('unregistration_submitted');
 
@@ -54,8 +54,8 @@ export default function Unregister() {
 
   if (state === 'success') {
     return (
-      <div id="avmelding" className="px-6 py-12">
-        <div className="mx-auto max-w-2xl rounded-lg border border-border bg-background-alt p-6 text-center">
+      <div id="avmelding" className="bg-paper px-6 py-12">
+        <div className="mx-auto max-w-2xl rounded-md border border-line bg-background p-6 text-center">
           <p className="text-lg text-text">{message}</p>
         </div>
       </div>
@@ -63,9 +63,9 @@ export default function Unregister() {
   }
 
   return (
-    <div id="avmelding" className="px-6 py-12">
-      <div className="mx-auto max-w-2xl rounded-lg border border-border bg-background-alt p-6">
-        <h3 className="text-lg font-semibold text-text">Avmelding</h3>
+    <div id="avmelding" className="bg-paper px-6 py-12">
+      <div className="mx-auto max-w-2xl border-t border-line pt-6">
+        <h3 className="text-lg font-semibold text-ink">Avmelding</h3>
         <p className="mt-2 text-sm text-text-muted">
           Kan du likevel ikke komme? Skriv inn navn og e-post du meldte deg på med.
         </p>
@@ -78,24 +78,24 @@ export default function Unregister() {
             type="text"
             required
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(event) => setName(event.target.value)}
             placeholder="Ditt navn"
             aria-label="Navn"
-            className="flex-1 rounded-lg border border-border bg-white px-4 py-2.5 text-text placeholder:text-text-muted/50 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+            className="flex-1 rounded-md border border-line bg-background px-4 py-2.5 text-text placeholder:text-text-muted/50 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/15"
           />
           <input
             type="email"
             required
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(event) => setEmail(event.target.value)}
             placeholder="din@epost.no"
             aria-label="E-postadresse"
-            className="flex-1 rounded-lg border border-border bg-white px-4 py-2.5 text-text placeholder:text-text-muted/50 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+            className="flex-1 rounded-md border border-line bg-background px-4 py-2.5 text-text placeholder:text-text-muted/50 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/15"
           />
           <button
             type="submit"
             disabled={state === 'loading'}
-            className="rounded-lg border border-primary px-5 py-2.5 text-sm font-medium text-primary transition-colors hover:bg-primary hover:text-white disabled:opacity-50"
+            className="rounded-md border border-primary px-5 py-2.5 text-sm font-medium text-primary transition-colors hover:bg-primary hover:text-white disabled:opacity-50"
           >
             {state === 'loading' ? 'Avmelder...' : 'Meld av'}
           </button>

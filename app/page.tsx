@@ -11,17 +11,38 @@ import Unregister from '@/components/sections/Unregister';
 import { client } from '@/sanity/lib/client';
 import { urlFor } from '@/sanity/lib/image';
 import { siteSettingsQuery } from '@/sanity/lib/queries';
+import type { SanityImageSource } from '@sanity/image-url';
+
+interface SiteSettingsMetadata {
+  ogTitle?: string | null;
+  ogDescription?: string | null;
+  ogImage?: SanityImageSource | null;
+  heroImage?: SanityImageSource | null;
+}
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
-    const settings = await client.fetch(siteSettingsQuery);
+    const settings = await client.fetch<SiteSettingsMetadata | null>(siteSettingsQuery);
+    const image = settings?.ogImage ?? settings?.heroImage;
+    const title = settings?.ogTitle ?? 'Stokkerfestivalen | Ole Anders sin 30-årsdag';
+    const description =
+      settings?.ogDescription ??
+      'Privat invitasjon til Ole Anders sin 30-årsdag på Sørumsvegen 50, 22. august 2026.';
 
-    const images = settings?.ogImage
-      ? [{ url: urlFor(settings.ogImage).width(1200).height(630).fit('crop').auto('format').url(), width: 1200, height: 630 }]
+    const images = image
+      ? [{ url: urlFor(image).width(1200).height(630).fit('crop').auto('format').url(), width: 1200, height: 630 }]
       : [];
 
     return {
+      title,
+      description,
       openGraph: {
+        title,
+        description,
+        type: 'website',
+        url: 'https://festival.stokkers.no',
+        locale: 'nb_NO',
+        siteName: 'Stokkerfestivalen',
         images,
       },
     };
@@ -43,8 +64,8 @@ export default function Home() {
       <Registration />
       <Suspense
         fallback={
-          <div className="px-6 py-20">
-            <div className="mx-auto max-w-5xl">
+          <div className="bg-paper-soft px-6 py-20">
+            <div className="mx-auto max-w-6xl">
               <p className="text-text-muted">Laster gjesteliste...</p>
             </div>
           </div>

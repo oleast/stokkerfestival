@@ -34,6 +34,55 @@ export const siteSettings = defineType({
       type: 'string',
     }),
     defineField({
+      name: 'activityImages',
+      title: 'Kuraterte aktivitetsbilder',
+      description: 'Valgfritt. Bruk galleribilder som visuelle anker for aktivitetene.',
+      type: 'array',
+      of: [
+        defineField({
+          name: 'activityImage',
+          title: 'Aktivitetsbilde',
+          type: 'object',
+          fields: [
+            defineField({
+              name: 'activityKey',
+              title: 'Aktivitet',
+              type: 'string',
+              options: {
+                list: [
+                  { title: 'Mat og grill', value: 'mat' },
+                  { title: 'Basseng og tun', value: 'basseng' },
+                  { title: 'Spill, tennis og musikk', value: 'spill' },
+                ],
+                layout: 'radio',
+              },
+            }),
+            defineField({
+              name: 'title',
+              title: 'Intern tittel',
+              type: 'string',
+            }),
+            defineField({
+              name: 'image',
+              title: 'Galleribilde',
+              type: 'reference',
+              to: [{ type: 'galleryImage' }],
+            }),
+          ],
+          preview: {
+            select: {
+              title: 'title',
+              activityKey: 'activityKey',
+              media: 'image.image',
+            },
+            prepare({ title, activityKey }) {
+              return { title: title || activityKey || 'Aktivitetsbilde' };
+            },
+          },
+        }),
+      ],
+    }),
+    defineField({
       name: 'ogTitle',
       title: 'OG-tittel',
       type: 'string',

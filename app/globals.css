@@ -12,17 +12,80 @@
   --color-accent: #D4A574;
   --color-accent-light: #E8CBA8;
   --color-border: #E5DDD3;
-  --font-sans: 'Geist', ui-sans-serif, system-ui, sans-serif;
-  --font-mono: 'Geist Mono', ui-monospace, monospace;
+  --color-ink: #171411;
+  --color-ink-soft: #3D3932;
+  --color-paper: #FBF8F1;
+  --color-paper-soft: #F3EDE2;
+  --color-paper-deep: #E9DDCC;
+  --color-field: #7E8D73;
+  --color-field-soft: #DCE2D3;
+  --color-sky-soft: #D9E5E8;
+  --color-clay: #B06B45;
+  --color-line: #DED4C7;
+  --color-focus: #9D4A27;
+  --shadow-soft: 0 22px 70px rgb(23 20 17 / 0.10);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
 
 body {
-  background-color: var(--color-background);
-  color: var(--color-text);
+  background-color: var(--color-paper);
+  color: var(--color-ink);
   font-family: var(--font-sans);
+  text-rendering: optimizeLegibility;
 }
 
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 5rem;
+}
+
+::selection {
+  background: var(--color-field-soft);
+  color: var(--color-ink);
+}
+
+@layer base {
+  h1,
+  h2,
+  h3 {
+    letter-spacing: 0;
+  }
+
+  button,
+  input,
+  textarea,
+  select,
+  a {
+    outline-color: var(--color-focus);
+  }
+}
+
+@layer components {
+  .eyebrow {
+    font-size: 0.72rem;
+    font-weight: 650;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    color: var(--color-primary);
+  }
+
+  .lead-text {
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    color: var(--color-ink-soft);
+  }
+
+  .fine-rule {
+    border-color: var(--color-line);
+  }
+
+  .focus-ring {
+    outline: 2px solid transparent;
+    outline-offset: 3px;
+  }
+
+  .focus-ring:focus-visible {
+    outline-color: var(--color-focus);
+  }
 }
