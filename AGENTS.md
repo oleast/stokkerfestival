@@ -12,7 +12,7 @@ Norskspråklig festivalside for 30-årsdag 22. august 2026. Single-page design m
 ## Tech Stack
 - **Framework**: Next.js 16.2.6 (App Router, Server Components default)
 - **Styling**: Tailwind CSS v4 (PostCSS plugin, `@theme` i globals.css)
-- **CMS**: Sanity (embedded studio på /studio, brukes kun for bilder + registreringer)
+- **CMS**: Sanity (eksternt studio på `stokkerfestival.sanity.studio`, deploy med `pnpm deploy:studio`)
 - **Hosting**: Cloudflare Pages (auto-deploy fra GitHub)
 - **E-post**: Brevo (europeisk, GDPR)
 - **Kart**: OpenStreetMap + Leaflet
@@ -69,7 +69,6 @@ app/                    – Next.js App Router
 ├── page.tsx            – Forsiden (single-page)
 ├── globals.css         – Tailwind + fargepalett
 ├── personvern/         – Personvernerklæring
-├── studio/             – Embedded Sanity Studio
 └── api/                – API routes (registration, unregister)
 components/
 ├── layout/             – Header, Footer
